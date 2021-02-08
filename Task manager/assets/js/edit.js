@@ -5,6 +5,7 @@ const taskInput = document.querySelector('#task'); //the task input text field
 //read from q string 
 const urlParams = new URLSearchParams(window.location.search);
 const id = Number(urlParams.get('id'));
+var date;
 //DB
 var DB;
 
@@ -63,10 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             return;
         }
-        var update_val = taskInput.value
+       
         var transaction = DB.transaction(['tasks'],'readwrite');
         var objectStore = transaction.objectStore('tasks');
-        var request = objectStore.put(update_val,id);
+        var update_val ={
+            taskname: taskInput.value,
+            date:new Date().getDate(),
+            id: id
+        } 
+        var request = objectStore.put(update_val);
         
         request.onsuccess = function(event) {
             displayTask()
