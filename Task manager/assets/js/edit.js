@@ -63,7 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             return;
         }
+        var update_val = taskInput.value
+        var transaction = DB.transaction(['tasks'],'readwrite');
+        var objectStore = transaction.objectStore('tasks');
+        var request = objectStore.put(update_val,id);
+        
+        request.onsuccess = function(event) {
+            displayTask()
+        };
 
+        request.onerror = function(event) {
+            console.log('Transaction failed');
+        };
+        
         /* 
         Instruction set to handle Update
 
