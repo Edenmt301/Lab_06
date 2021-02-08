@@ -182,16 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        All_tasks=document.querySelectorAll('.collection-item')
-        All_tasks.forEach(element => {
-            if(element.textContent.indexOf(filter.value)===-1){
-                element.style.display="none";
-            }
-            else{
-                element.style.display="block"
-            }
-           
-        });
         
     
     }
@@ -242,10 +232,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     asending.addEventListener('click', asendingOrder)
     function asendingOrder(){
-        displayTaskList();
+
+        
+        while (taskList.firstChild) {
+            taskList.removeChild(taskList.firstChild);
+        }
+
+        let objectStore = DB.transaction('tasks').objectStore('tasks');
+
+        objectStore.openCursor().onsuccess = function(e) {
+            let cursor = e.target.result;
+
+            if (cursor) {
+
+                const li = document.createElement('li');
+                li.setAttribute('data-task-id', cursor.value.id);
+                li.className = 'collection-item';
+                li.style.backgroundColor="rgb(219, 243, 237)"
+                li.appendChild(document.createTextNode(cursor.value.taskname));
+                const link = document.createElement('a');
+                link.className = 'delete-item secondary-content';
+                link.innerHTML = `
+                 <i class="fa fa-remove"></i>
+                &nbsp;
+                <a href="./edit.html?id=${cursor.value.id}"><i class="fa fa-edit"></i> </a>
+                `;
+                li.appendChild(link);
+                taskList.appendChild(li);
+                cursor.continue();
+            }
+        }
     }
 
-    var des=false
     desending.addEventListener('click', desendingOrder)
     function desendingOrder(){
         while (taskList.firstChild) {
@@ -253,31 +271,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         let objectStore = DB.transaction('tasks').objectStore('tasks');
         objectStore.openCursor(null,'prev').onsuccess = function(e) {
-            // assign the current cursor
+            
             let cursor = e.target.result;
         
             if (cursor) {
         
-                // Create an li element when the user adds a task 
                 const li = document.createElement('li');
-                //add Attribute for delete 
                 li.setAttribute('data-task-id', cursor.value.id);
-                // Adding a class
                 li.className = 'collection-item';
-                // Create text node and append it 
+                li.style.backgroundColor="rgb(150,150,150)"
                 li.appendChild(document.createTextNode(cursor.value.taskname));
-                // Create new element for the link 
                 const link = document.createElement('a');
-                // Add class and the x marker for a 
                 link.className = 'delete-item secondary-content';
                 link.innerHTML = `
                 <i class="fa fa-remove"></i>
                 &nbsp;
                 <a href="../edit.html?id=${cursor.value.id}"><i class="fa fa-edit"></i> </a>
                 `;
-                // Append link to li
                 li.appendChild(link);
-                // Append to UL 
                 taskList.appendChild(li);
                 cursor.continue();
             }
