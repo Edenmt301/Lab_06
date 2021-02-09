@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const li = document.createElement('li');
                 li.setAttribute('data-task-id', cursor.value.id);
                 li.className = 'collection-item';
-                li.style.backgroundColor="rgb(150,150,150)"
+                li.style.backgroundColor="rgb(200,200,200)"
                 li.appendChild(document.createTextNode(cursor.value.taskname));
                 const link = document.createElement('a');
                 link.className = 'delete-item secondary-content';
@@ -289,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="../edit.html?id=${cursor.value.id}"><i class="fa fa-edit"></i> </a>
                 `;
                 li.appendChild(link);
+
                 taskList.appendChild(li);
                 cursor.continue();
             }
